@@ -44,6 +44,8 @@ function validateInputs(bill, tip, people) {
   return isValid;
 }
 
+
+
 //automatic tip calculation when clicked on tip % button
 buttons.forEach((button) => {
   button.addEventListener("click", (e) => {
@@ -64,18 +66,44 @@ buttons.forEach((button) => {
 
 billAmount.addEventListener("input", () => {
   const bill = parseFloat(billAmount.value);
-  const people =
-    numberofpeople.value === "" ? 1 : parseInt(numberofpeople.value);
+
+   if (billAmount.value !== "" && numberofpeople.value === "") {
+    numberofpeople.value = 1;
+  }
+
+  const people = parseInt(numberofpeople.value);
+  
 
   let tip = parseFloat(customTipPercentage.value);
 
   const selectedBtn = document.querySelector(".tip-btns .selected");
-  if (!tip && selectedBtn) {
+  if (isNaN(tip) && selectedBtn){
     tip = parseInt(selectedBtn.innerText.replace("%", ""));
   }
   calculateTip(bill, tip, people);
 });
 
+numberofpeople.addEventListener("focus", () => {
+  if (numberofpeople.value == 1) {
+    numberofpeople.value = "";
+  }
+});
+numberofpeople.addEventListener("blur", () => {
+  if (numberofpeople.value === "" && billAmount.value !== "") {
+    numberofpeople.value = 1;
+ const bill = parseFloat(billAmount.value);
+
+    let tip = parseFloat(customTipPercentage.value);
+
+    const selectedBtn = document.querySelector(".tip-btns .selected");
+
+    if (isNaN(tip) && selectedBtn) {
+      tip = parseInt(selectedBtn.innerText.replace("%", ""));
+    }
+
+    calculateTip(bill, tip, 1); }
+});
+//
 numberofpeople.addEventListener("input", () => {
   const bill = parseFloat(billAmount.value);
   const people = parseInt(numberofpeople.value);
@@ -83,7 +111,7 @@ numberofpeople.addEventListener("input", () => {
   let tip = parseFloat(customTipPercentage.value);
 
   const selectedBtn = document.querySelector(".tip-btns .selected");
-  if (!tip && selectedBtn) {
+  if (isNaN(tip) && selectedBtn) {
     tip = parseInt(selectedBtn.innerText.replace("%", ""));
   }
 
@@ -111,8 +139,16 @@ customTipPercentage.addEventListener("input", (e) => {
 
 //to caluclate tip
 function calculateTip(billAmount, tipPercentage, numberofpeople) {
-  const isValid = validateInputs(billAmount, tipPercentage, numberofpeople);
+  
+ if (isNaN(tipPercentage)) {
+    tipPercentage = 0;
+  }
 
+  const isValid = validateInputs(
+    billAmount,
+    tipPercentage,
+    numberofpeople
+  );
   if (!isValid) {
     billTipAmount.innerHTML = "₹0.00";
     billTotalPerPerson.innerHTML = "₹0.00";
@@ -145,13 +181,22 @@ function calculateTip(billAmount, tipPercentage, numberofpeople) {
 resetButton.addEventListener("click", resetEverything);
 function resetEverything() {
   buttons.forEach((btn) => btn.classList.remove("selected"));
+
   billTipAmount.innerHTML = "₹0.00";
   billTotalPerPerson.innerHTML = "₹0.00";
   totalTipDisplay.innerHTML = "₹0.00";
   grandTotalDisplay.innerHTML = "₹0.00";
+
   billAmount.value = "";
   numberofpeople.value = "";
   customTipPercentage.value = "";
+
+
+  document.getElementById("billError").textContent = "";
+  document.getElementById("tipError").textContent = "";
+  document.getElementById("peopleError").textContent = "";
+
+  customTipPercentage.classList.remove("custom-active");
 }
 
 document.addEventListener("keydown", (e) => {

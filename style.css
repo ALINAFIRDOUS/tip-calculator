@@ -62,6 +62,7 @@ body {
   flex-direction: column;
   gap: 0.5rem;
 }
+
 .inputs-section {
   gap: 2rem;
 }
@@ -88,9 +89,16 @@ label {
 .people-input img {
   position: absolute;
   top: 50%;
-  left: 5%;
-  transform: translate(-50%, -50%);
-} 
+  left: 12px;             
+  transform: translateY(-50%);
+  
+  width: 16px;            
+  height: 16px;
+  object-fit: contain;
+  opacity: 0.6;           
+  pointer-events: none;    
+}
+
 .tip-btns {
   display: flex;
   flex-direction: column;
